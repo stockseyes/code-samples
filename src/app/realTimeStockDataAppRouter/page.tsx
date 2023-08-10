@@ -1,7 +1,7 @@
 'use client'
 import "../css/center.css"
 import {useEffect, useState} from "react";
-import {Fields, initializeStocksEyes, initializeStore, subscribeRealTimeData} from "@singhaltushar903/market-pulse";
+import {Fields, initialiseStocksEyes, initializeStore, subscribeRealTimeData} from "@stockseyes/market-pulse";
 
 export default function Page() {
 
@@ -9,15 +9,7 @@ export default function Page() {
 
     useEffect(() => {
         // initialize stocks eyes store
-        initializeStocksEyes({
-            apiKey: "AIzaSyBAS2MuKU2tmgwDTG3Zxw-NgYKJ38es_QY",
-            authDomain: "stockeyes-c9705.firebaseapp.com",
-            projectId: "stockeyes-c9705",
-            storageBucket: "stockeyes-c9705.appspot.com",
-            messagingSenderId: "320540998409",
-            appId: "1:320540998409:web:8c08befa763127716831d8",
-            measurementId: "G-RYSG0KH01J"
-        });
+        initialiseStocksEyes("eyJhcGlLZXkiOiJBSXphU3lCQVMyTXVLVTJ0bWd3RFRHM1p4dy1OZ1lLSjM4ZXNfUVkiLCJhdXRoRG9tYWluIjoic3RvY2tleWVzLWM5NzA1LmZpcmViYXNlYXBwLmNvbSIsInByb2plY3RJZCI6InN0b2NrZXllcy1jOTcwNSIsInN0b3JhZ2VCdWNrZXQiOiJzdG9ja2V5ZXMtYzk3MDUuYXBwc3BvdC5jb20iLCJtZXNzYWdpbmdTZW5kZXJJZCI6IjMyMDU0MDk5ODQwOSIsImFwcElkIjoiMTozMjA1NDA5OTg0MDk6d2ViOjhjMDhiZWZhNzYzMTI3NzE2ODMxZDgiLCJtZWFzdXJlbWVudElkIjoiRy1SWVNHMEtIMDFKIn0=");
         // either use the fields enum , if in typescript, or use simple strings
         /*
         * Possible fields are
@@ -40,7 +32,7 @@ export default function Page() {
             DEPTH = "depth",
             TRADING_SYMBOL = "trading_symbol"
         * */
-        const unsubscribe = subscribeRealTimeData([738561], [Fields.TRADING_SYMBOL,"last_price","volume"], (data)=>{
+        const unsubscribe = subscribeRealTimeData([738561, 89378937893], [Fields.TRADING_SYMBOL,"last_price","volume"], (data)=>{
             console.log(data);
             setTradableData(data);
         })
