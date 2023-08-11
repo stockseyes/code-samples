@@ -6,8 +6,43 @@ import {Fields, initialiseStocksEyes, initializeStore, subscribeRealTimeData} fr
 export default function Page() {
 
     const [tradableData, setTradableData] = useState([]);
+    const [unsubscribe, setUnsubscribe] = useState(() => () => {});
+    const [isForeground, setIsForeground] = useState(true);
+
+
+    // handles when the view of our website goes off-screen to save on read bandwidth
+    // preference of client
+    // saves on API cost, not reading data when view is not on screen
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                setIsForeground(false);
+                console.log("Tab is in background")
+            } else {
+                setIsForeground(true);
+                console.log("Tab is in foreground")
+            }
+        };
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+        };
+    }, []);
+
+
+
+    // unsubscribe from firebase listener when app goes in background
+    useEffect(() => {
+        if (!isForeground) {
+            unsubscribe();
+        }
+    }, [isForeground, unsubscribe])
+
 
     useEffect(() => {
+
+        if (!isForeground) return;
+
         // initialize stocks eyes store
         initialiseStocksEyes("eyJhcGlLZXkiOiJBSXphU3lCQVMyTXVLVTJ0bWd3RFRHM1p4dy1OZ1lLSjM4ZXNfUVkiLCJhdXRoRG9tYWluIjoic3RvY2tleWVzLWM5NzA1LmZpcmViYXNlYXBwLmNvbSIsInByb2plY3RJZCI6InN0b2NrZXllcy1jOTcwNSIsInN0b3JhZ2VCdWNrZXQiOiJzdG9ja2V5ZXMtYzk3MDUuYXBwc3BvdC5jb20iLCJtZXNzYWdpbmdTZW5kZXJJZCI6IjMyMDU0MDk5ODQwOSIsImFwcElkIjoiMTozMjA1NDA5OTg0MDk6d2ViOjhjMDhiZWZhNzYzMTI3NzE2ODMxZDgiLCJtZWFzdXJlbWVudElkIjoiRy1SWVNHMEtIMDFKIn0=");
         // either use the fields enum , if in typescript, or use simple strings
@@ -19,7 +54,7 @@ export default function Page() {
             LAST_PRICE = "last_price",
             LAST_QUANTITY = "last_quantity",
             AVERAGE_PRICE = "average_price",
-            VOLUME = "volume",
+            VOLUME_TRADED = "volume_traded",
             BUY_QUANTITY = "buy_quantity",
             SELL_QUANTITY = "sell_quantity",
             OHLC = "ohlc",
@@ -32,18 +67,22 @@ export default function Page() {
             DEPTH = "depth",
             TRADING_SYMBOL = "trading_symbol"
         * */
-        const unsubscribe = subscribeRealTimeData([738561, 89378937893], [Fields.TRADING_SYMBOL,"last_price","volume"], (data)=>{
+        const unsubscribe = subscribeRealTimeData([738561, 256265, 268041, 260105], [Fields.TRADING_SYMBOL,"last_price","volume_traded"], (data)=>{
             console.log(data);
             setTradableData(data);
         })
 
+        // unsubscribe when user closed your tab
+        // optional, just to close connection gracefully
+        window.addEventListener('beforeunload', unsubscribe);
+        setUnsubscribe(() => unsubscribe)
+
         // unsubscribe the real time data fetch when component unmounts
         return () => {
-            // TODO: add window load and unload listeners
-
             unsubscribe();
+            window.removeEventListener('beforeunload', unsubscribe);
         }
-    }, [])
+    }, [isForeground]) // run whenever user comes foreground
 
     return (
         <div className="centered-div">
@@ -62,7 +101,7 @@ export default function Page() {
                         <tr key={index}>
                             <td style={styles.td}>{item.trading_symbol}</td>
                             <td style={styles.td}>{item.last_price}</td>
-                            <td style={styles.td}>{item.volume}</td>
+                            <td style={styles.td}>{item.volume_traded}</td>
                         </tr>
                     ))}
                     </tbody>
