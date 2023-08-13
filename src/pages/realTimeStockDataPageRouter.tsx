@@ -1,5 +1,4 @@
-'use client'
-import "../css/center.css"
+import "../app/css/center.css"
 import {useEffect, useState} from "react";
 import {Fields, initialiseStocksEyes, initializeStore, subscribeRealTimeData, searchInstruments, SearchInstrumentsRequest} from "@stockseyes/market-pulse";
 

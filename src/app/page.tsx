@@ -7,9 +7,9 @@ export default function Home() {
           <h1>StocksEyes Code Samples for Next js</h1>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Link href="/realTimeStockDataAppRouter">
-                  <button style={styles.button}><h2>Real Time Price <br/> (App Router Example)</h2></button>
+                  <button style={styles.button}><h2>Real Time Price <br/> (App Router Example) <br/> check file "src/app/realTimeStockDataAppRouter/page.tsx" </h2></button>
               </Link>
-              <Link href="/page2">
+              <Link href="/realTimeStockDataPageRouter">
                   <button style={styles.button}><h2>Real Time Price <br/> (Page Router Example) </h2></button>
               </Link>
           </div>
