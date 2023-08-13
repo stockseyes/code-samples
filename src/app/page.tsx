@@ -2,19 +2,25 @@ import "./css/center.css"
 import Link from "next/link";
 
 export default function Home() {
-  return (
-      <div className="centered-div">
-          <h1>StocksEyes Code Samples for Next js</h1>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <Link href="/realTimeStockDataAppRouter">
-                  <button style={styles.button}><h2>Real Time Price <br/> (App Router Example) <br/> check file "src/app/realTimeStockDataAppRouter/page.tsx" </h2></button>
-              </Link>
-              <Link href="/realTimeStockDataPageRouter">
-                  <button style={styles.button}><h2>Real Time Price <br/> (Page Router Example) </h2></button>
-              </Link>
-          </div>
-      </div>
-  )
+    return (
+        <div className="centered-div">
+            <h1>StocksEyes Code Samples for Next js</h1>
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+                <Link href="/realTimeStockDataAppRouter">
+                    <button style={styles.button}>
+                        <h2>Real Time Price (App Router Example)</h2>
+                        <p>Check file: src/app/realTimeStockDataAppRouter/page.tsx</p>
+                    </button>
+                </Link>
+                <Link href="/realTimeStockDataPageRouter">
+                    <button style={styles.button}>
+                        <h2>Real Time Price (Page Router Example)</h2>
+                        <p>Check file: src/pages/realTimeStockDataPageRouter.tsx</p>
+                    </button>
+                </Link>
+            </div>
+        </div>
+    )
 }
 
 const styles = {
