@@ -49,7 +49,8 @@ export default function Page() {
 
             // get Relevant Instruments
             const searchInstrumentsRequest: SearchInstrumentsRequest = {
-                tradingsymbol: ["RELIANCE", "HDFCBANK", "SBIN", "NIFTY 50", "NIFTY 500"]
+                tradingsymbol: ["RELIANCE", "HDFCBANK", "SBIN", "NIFTY 50", "NIFTY 500"],
+                exchange: ["NSE"]
             }
             const instruments = await searchInstruments(searchInstrumentsRequest);
 
