@@ -1,6 +1,12 @@
 import "../app/css/center.css"
 import {useEffect, useState} from "react";
-import {Fields, initialiseStocksEyes, initializeStore, subscribeRealTimeData, searchInstruments, SearchInstrumentsRequest} from "@stockseyes/market-pulse";
+import {
+    Fields,
+    initialiseStocksEyes,
+    searchInstruments,
+    SearchInstrumentsRequest,
+    subscribeRealTimeData
+} from "@stockseyes/market-pulse";
 
 export default function Page() {
 
@@ -44,7 +50,7 @@ export default function Page() {
 
         const subscribeInstrumentDataFromStocksEyes = async () => {
             // initialize stocks eyes store
-            initialiseStocksEyes("eyJhcGlLZXkiOiJBSXphU3lCQVMyTXVLVTJ0bWd3RFRHM1p4dy1OZ1lLSjM4ZXNfUVkiLCJhdXRoRG9tYWluIjoic3RvY2tleWVzLWM5NzA1LmZpcmViYXNlYXBwLmNvbSIsInByb2plY3RJZCI6InN0b2NrZXllcy1jOTcwNSIsInN0b3JhZ2VCdWNrZXQiOiJzdG9ja2V5ZXMtYzk3MDUuYXBwc3BvdC5jb20iLCJtZXNzYWdpbmdTZW5kZXJJZCI6IjMyMDU0MDk5ODQwOSIsImFwcElkIjoiMTozMjA1NDA5OTg0MDk6d2ViOjhjMDhiZWZhNzYzMTI3NzE2ODMxZDgiLCJtZWFzdXJlbWVudElkIjoiRy1SWVNHMEtIMDFKIn0=");
+            await initialiseStocksEyes("eyJhcGlLZXkiOiJBSXphU3lCQVMyTXVLVTJ0bWd3RFRHM1p4dy1OZ1lLSjM4ZXNfUVkiLCJhdXRoRG9tYWluIjoic3RvY2tleWVzLWM5NzA1LmZpcmViYXNlYXBwLmNvbSIsInByb2plY3RJZCI6InN0b2NrZXllcy1jOTcwNSIsInN0b3JhZ2VCdWNrZXQiOiJzdG9ja2V5ZXMtYzk3MDUuYXBwc3BvdC5jb20iLCJtZXNzYWdpbmdTZW5kZXJJZCI6IjMyMDU0MDk5ODQwOSIsImFwcElkIjoiMTozMjA1NDA5OTg0MDk6d2ViOjhjMDhiZWZhNzYzMTI3NzE2ODMxZDgiLCJtZWFzdXJlbWVudElkIjoiRy1SWVNHMEtIMDFKIn0=");
 
             // get Relevant Instruments
             const searchInstrumentsRequest: SearchInstrumentsRequest = {
