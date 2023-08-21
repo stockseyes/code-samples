@@ -58,6 +58,7 @@ export default function Page() {
                 exchange: ["NSE"]
             }
             const instruments = await searchInstruments(searchInstrumentsRequest);
+
             // either use the fields enum , if in typescript, or use simple strings
             /*
             * Possible fields are
@@ -81,7 +82,7 @@ export default function Page() {
                 TRADING_SYMBOL = "trading_symbol"
             * */
             const instrumentTokens = instruments.map((instrument=> instrument.instrument_token))
-            const unsubscribe = subscribeRealTimeData(instrumentTokens, [Fields.TRADING_SYMBOL,"last_price","volume_traded"], (data)=>{
+            const unsubscribe = await subscribeRealTimeData(instrumentTokens, [Fields.TRADING_SYMBOL,"last_price","volume_traded"], (data)=>{
                 console.log(data);
                 setTradableData(data);
             })
