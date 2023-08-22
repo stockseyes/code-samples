@@ -1,17 +1,17 @@
 'use client'
 import "../css/center.css"
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Fields,
-    initialiseStocksEyes,
+    initialiseStocksEyes, MarketData,
     searchInstruments,
     SearchInstrumentsRequest,
     subscribeRealTimeData
 } from "@stockseyes/market-pulse";
 
-export default function Page() {
+const Page: React.FC =() => {
 
-    const [tradableData, setTradableData] = useState([]);
+    const [tradableData, setTradableData] = useState<MarketData[]>([]);
     const [unsubscribe, setUnsubscribe] = useState(() => () => {});
     const [isForeground, setIsForeground] = useState(true);
 
@@ -83,7 +83,7 @@ export default function Page() {
                 TRADING_SYMBOL = "trading_symbol"
             * */
             const instrumentTokens = instruments.map((instrument=> instrument.instrument_token))
-            const unsubscribe = await subscribeRealTimeData(instrumentTokens, [Fields.TRADING_SYMBOL,"last_price","volume_traded"], (data)=>{
+            const unsubscribe = await subscribeRealTimeData(instrumentTokens, [Fields.TRADING_SYMBOL,Fields.LAST_PRICE,Fields.VOLUME], (data)=>{
                 console.log(data);
                 setTradableData(data);
             })
@@ -118,9 +118,9 @@ export default function Page() {
                     <tbody>
                     {tradableData.map((item, index) => (
                         <tr key={index}>
-                            <td style={styles.td}>{item.trading_symbol}</td>
-                            <td style={styles.td}>{item.last_price}</td>
-                            <td style={styles.td}>{item.volume_traded}</td>
+                            <td style={styles.td}>{item[Fields.TRADING_SYMBOL]}</td>
+                            <td style={styles.td}>{item[Fields.LAST_PRICE]}</td>
+                            <td style={styles.td}>{item[Fields.VOLUME]}</td>
                         </tr>
                     ))}
                     </tbody>
@@ -130,9 +130,8 @@ export default function Page() {
     )
 }
 
-const styles = {
+const styles: Record<string, React.CSSProperties> = {
     table: {
-        borderCollapse: 'collapse',
         width: '100%',
         border: '1px solid #ddd',
         borderRadius: '5px',
@@ -151,3 +150,5 @@ const styles = {
         borderBottom: '1px solid #ddd',
     },
 };
+
+export default Page;
