@@ -51,7 +51,9 @@ const Page: React.FC =() => {
 
         const subscribeInstrumentDataFromStocksEyes = async () => {
             // initialize stocks eyes store
-            await initialiseStocksEyes("---GET YOUR API KEY---> https://stockseyes.com/contact",StocksEyesEnvironment.DEV);
+            await initialiseStocksEyes(
+                "eyJhcGlLZXkiOiJBSXphU3lCQVMyTXVLVTJ0bWd3RFRHM1p4dy1OZ1lLSjM4ZXNfUVkiLCJhdXRoRG9tYWluIjoic3RvY2tleWVzLWM5NzA1LmZpcmViYXNlYXBwLmNvbSIsInByb2plY3RJZCI6InN0b2NrZXllcy1jOTcwNSIsInN0b3JhZ2VCdWNrZXQiOiJzdG9ja2V5ZXMtYzk3MDUuYXBwc3BvdC5jb20iLCJtZXNzYWdpbmdTZW5kZXJJZCI6IjMyMDU0MDk5ODQwOSIsImFwcElkIjoiMTozMjA1NDA5OTg0MDk6d2ViOjhjMDhiZWZhNzYzMTI3NzE2ODMxZDgiLCJtZWFzdXJlbWVudElkIjoiRy1SWVNHMEtIMDFKIiwicmVjYXB0Y2hhQ2xpZW50S2V5IjoiNkxmOGFkd25BQUFBQUtrQkRGMmk5Q19nZVFnQTZkOVlNU29fTHBBeSJ9",
+                StocksEyesEnvironment.PRODUCTION);
 
             // get Relevant Instruments
             const searchInstrumentsRequest: SearchInstrumentsRequest = {
