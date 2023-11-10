@@ -1,9 +1,10 @@
 import "../app/css/center.css"
 import React, {useEffect, useState} from "react";
 import {
+    Exchange,
     Fields,
-    initialiseStocksEyes, MarketData,
-    searchInstruments,
+    initialiseStocksEyes, MarketData, PaginationDetails,
+    searchInstruments, SearchInstrumentsPatternRequest,
     SearchInstrumentsRequest, StocksEyesEnvironment,
     subscribeRealTimeData
 } from "@stockseyes/market-pulse";
@@ -55,10 +56,17 @@ const Page: React.FC =() => {
             // get Relevant Instruments
             const searchInstrumentsRequest: SearchInstrumentsRequest = {
                 tradingsymbol: ["RELIANCE", "HDFCBANK", "SBIN", "NIFTY 50", "NIFTY 500"],
-                exchange: ["NSE"]
+                exchange: [Exchange.NSE]
             }
-            const instruments = await searchInstruments(searchInstrumentsRequest);
-
+            const searchInstrumentsPatternRequest: SearchInstrumentsPatternRequest = {
+                tradingsymbol: "REL"
+            }
+            const paginationDetails: PaginationDetails = {
+                offset: 0,
+                limit : 5
+            }
+            const searchInstrumentsResponse = await searchInstruments(searchInstrumentsRequest, searchInstrumentsPatternRequest, paginationDetails);
+            const instruments = searchInstrumentsResponse.instruments
             // either use the fields enum , if in typescript, or use simple strings
             /*
             * Possible fields are
