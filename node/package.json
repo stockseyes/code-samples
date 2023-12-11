@@ -11,6 +11,6 @@
   "author": "Tushar Singhal",
   "license": "ISC",
   "dependencies": {
-    "@stockseyes/market-orders": "1.1.1"
+    "@stockseyes/market-orders": "2.1.0"
   }
 }
