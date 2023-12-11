@@ -51,21 +51,28 @@ const Page: React.FC =() => {
 
         const subscribeInstrumentDataFromStocksEyes = async () => {
             // initialize stocks eyes store
+            
+            // initialize stocks eyes store
             await initialiseStocksEyes("---GET YOUR API KEY---> https://stockseyes.com/contact",StocksEyesEnvironment.DEV);
 
             // get Relevant Instruments
             const searchInstrumentsRequest: SearchInstrumentsRequest = {
-                tradingsymbol: ["RELIANCE", "HDFCBANK", "SBIN", "NIFTY 50", "NIFTY 500"],
-                exchange: [Exchange.NSE]
+                tradingsymbol: ["RELIANCE23DECFUT", "NIFTY23DECFUT", "BANKNIFTY23DECFUT"],
+                // exchange: [Exchange.NSE]
             }
             const searchInstrumentsPatternRequest: SearchInstrumentsPatternRequest = {
-                tradingsymbol: "REL"
+                // tradingsymbol: "GOLD23DECFUT",
+                // expiryRange: {
+                //     "low": new Date("2023-12-05"),
+                //     "high": new Date("2023-12-07")
+                // }
             }
             const paginationDetails: PaginationDetails = {
                 offset: 0,
                 limit : 5
             }
             const searchInstrumentsResponse = await searchInstruments(searchInstrumentsRequest, searchInstrumentsPatternRequest, paginationDetails);
+            console.log(searchInstrumentsResponse)
             const instruments = searchInstrumentsResponse.instruments
             // either use the fields enum , if in typescript, or use simple strings
             /*
@@ -90,7 +97,7 @@ const Page: React.FC =() => {
                 TRADING_SYMBOL = "trading_symbol"
             * */
             const instrumentTokens = instruments.map((instrument=> instrument.instrument_token))
-            const unsubscribe = await subscribeRealTimeData(instrumentTokens, [Fields.TRADING_SYMBOL,Fields.LAST_PRICE,Fields.VOLUME], (data)=>{
+            const unsubscribe = await subscribeRealTimeData(instrumentTokens, [Fields.TRADING_SYMBOL,Fields.LAST_PRICE,Fields.VOLUME,Fields.DEPTH], (data)=>{
                 console.log(data);
                 setTradableData(data);
             })
