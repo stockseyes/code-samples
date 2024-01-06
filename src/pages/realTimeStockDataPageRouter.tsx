@@ -58,7 +58,7 @@ const Page: React.FC =() => {
 
             // get Relevant Instruments
             const searchInstrumentsRequest: SearchInstrumentsRequest = {
-                tradingsymbol: ["RELIANCE23DECFUT", "NIFTY23DECFUT", "BANKNIFTY23DECFUT"],
+                tradingsymbol: ["RELIANCE23DECFUT", "NIFTY23DECFUT", "BANKNIFTY23DECFUT", "GOLD24FEBFUT"],
                 // exchange: [Exchange.NSE]
             }
             const searchInstrumentsPatternRequest: SearchInstrumentsPatternRequest = {
@@ -98,7 +98,7 @@ const Page: React.FC =() => {
                 TRADING_SYMBOL = "trading_symbol"
             * */
             const instrumentTokens = instruments.map((instrument=> instrument.instrument_token))
-            const unsubscribe = await subscribeRealTimeData(instrumentTokens, [Fields.TRADING_SYMBOL,Fields.LAST_PRICE,Fields.VOLUME,Fields.DEPTH], (data)=>{
+            const unsubscribe = await subscribeRealTimeData(instrumentTokens, [Fields.TRADING_SYMBOL,Fields.LAST_PRICE,Fields.VOLUME,Fields.DEPTH, Fields.PREVIOUS_DEPTH, Fields.PREVIOUS_PRICE], (data)=>{
                 console.log(data);
                 setTradableData(data);
             })

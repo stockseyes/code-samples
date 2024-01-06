@@ -1,9 +1,17 @@
 import {Operator, setTrigger} from "@stockseyes/market-orders";
 
-const apiKey = "GET YOUR API KEY at www.stockseyes.com";
+const apiKey = "c3RvY2tzZXllc2Nsb3VkcnVuLW4yZXJtb3ZpNnEtZWwuYS5ydW4uYXBw";
 
 const sampletTrigger = async () => {
-   await setTrigger(apiKey, "hkjdkjd", Operator.GREATER_THAN_OR_EQUALS_TO,345, 12344, {"extra meta ": "you will receive in callback body"});
+   await setTrigger(apiKey, "https://stockseyescloudrun-n2ermovi6q-el.a.run.app/searchInstruments", Operator.GREATER_THAN_OR_EQUALS_TO,2416, 738561, {
+      "searchPatterns": {
+         "tradingsymbol": "RELIANCE"
+      },
+      "paginationDetails": {
+         "offset": 0,
+         "limit": 5
+      }
+   });
 }
 
 sampletTrigger()
