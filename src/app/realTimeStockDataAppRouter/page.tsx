@@ -9,7 +9,7 @@ import {
     SearchInstrumentsRequest, StocksEyesEnvironment,
     subscribeRealTimeData
 } from "@stockseyes/market-pulse";
-import {PaginationDetails, SearchInstrumentsPatternRequest} from "@stockseyes/market-pulse/src/instruments";
+import {PaginationDetails, SearchInstrumentsPatternRequest} from "@stockseyes/market-pulse";
 
 const Page: React.FC =() => {
 
