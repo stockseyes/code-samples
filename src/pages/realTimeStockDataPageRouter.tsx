@@ -58,8 +58,8 @@ const Page: React.FC =() => {
 
             // get Relevant Instruments
             const searchInstrumentsRequest: SearchInstrumentsRequest = {
-                tradingsymbol: ["RELIANCE23DECFUT", "NIFTY23DECFUT", "BANKNIFTY23DECFUT", "GOLD24FEBFUT"],
-                // exchange: [Exchange.NSE]
+                tradingsymbol: ["RELIANCE", "NIFTY BANK"],
+                exchange: [Exchange.NSE]
             }
             const searchInstrumentsPatternRequest: SearchInstrumentsPatternRequest = {
                 // tradingsymbol: "GOLD23DECFUT",
