@@ -2,7 +2,7 @@ import "../app/css/center.css"
 import React, {useEffect, useState} from "react";
 import {
     Exchange,
-    Fields,
+    Fields, getLatestQuoteByExchangeAndTradingSymbol, getLatestQuoteByInstrumentId,
     initialiseStocksEyes, MarketData, PaginationDetails,
     searchInstruments, SearchInstrumentsPatternRequest,
     SearchInstrumentsRequest, StocksEyesEnvironment,
@@ -14,7 +14,8 @@ const Page: React.FC =() => {
     const [tradableData, setTradableData] = useState<MarketData[]>([]);
     const [unsubscribe, setUnsubscribe] = useState(() => () => {});
     const [isForeground, setIsForeground] = useState(true);
-
+    const [latestQuoteByInstrumentId, setLatestQuoteByInstrumentId] = useState(undefined);
+    const [latestQuoteByExchangeAndTradingSymbol, setLatestQuoteByExchangeAndTradingSymbol] = useState(undefined);
 
     // handles when the view of our website goes off-screen to save on read bandwidth
     // preference of client
@@ -55,6 +56,9 @@ const Page: React.FC =() => {
             await initialiseStocksEyes(
                 "eyJhcGlLZXkiOiJBSXphU3lCQVMyTXVLVTJ0bWd3RFRHM1p4dy1OZ1lLSjM4ZXNfUVkiLCJhdXRoRG9tYWluIjoic3RvY2tleWVzLWM5NzA1LmZpcmViYXNlYXBwLmNvbSIsInByb2plY3RJZCI6InN0b2NrZXllcy1jOTcwNSIsInN0b3JhZ2VCdWNrZXQiOiJzdG9ja2V5ZXMtYzk3MDUuYXBwc3BvdC5jb20iLCJtZXNzYWdpbmdTZW5kZXJJZCI6IjMyMDU0MDk5ODQwOSIsImFwcElkIjoiMTozMjA1NDA5OTg0MDk6d2ViOjhjMDhiZWZhNzYzMTI3NzE2ODMxZDgiLCJtZWFzdXJlbWVudElkIjoiRy1SWVNHMEtIMDFKIiwicmVjYXB0Y2hhQ2xpZW50S2V5IjoiNkxmOGFkd25BQUFBQUtrQkRGMmk5Q19nZVFnQTZkOVlNU29fTHBBeSJ9",
                 StocksEyesEnvironment.PRODUCTION);
+
+            setLatestQuoteByInstrumentId(await getLatestQuoteByInstrumentId("128083204"));
+            setLatestQuoteByExchangeAndTradingSymbol(await getLatestQuoteByExchangeAndTradingSymbol(Exchange.NSE, "RELIANCE"))
 
             // get Relevant Instruments
             const searchInstrumentsRequest: SearchInstrumentsRequest = {
@@ -140,6 +144,9 @@ const Page: React.FC =() => {
                     ))}
                     </tbody>
                 </table>
+                <p>Latest reliance quote by instrument Id check {JSON.stringify(latestQuoteByInstrumentId)} </p>
+
+                <p>Latest reliance quote by Exchange And TradingSymbol  check {JSON.stringify(latestQuoteByExchangeAndTradingSymbol)} </p>
             </div>
         </div>
     )
