@@ -2,7 +2,8 @@ import "../app/css/center.css"
 import React, {useEffect, useState} from "react";
 import {
     Exchange,
-    Fields, getLatestQuoteByExchangeAndTradingSymbol, getLatestQuoteByInstrumentId,
+    Fields, getFutures, getLatestQuoteByExchangeAndTradingSymbol, getLatestQuoteByInstrumentId,
+    getOptions,
     initialiseStocksEyes, MarketData, PaginationDetails,
     searchInstruments, SearchInstrumentsPatternRequest,
     SearchInstrumentsRequest, StocksEyesEnvironment,
@@ -16,6 +17,8 @@ const Page: React.FC =() => {
     const [isForeground, setIsForeground] = useState(true);
     const [latestQuoteByInstrumentId, setLatestQuoteByInstrumentId] = useState(undefined);
     const [latestQuoteByExchangeAndTradingSymbol, setLatestQuoteByExchangeAndTradingSymbol] = useState(undefined);
+    const [optionList, setOptionList] = useState(undefined);
+    const [futureList, setFutureList] = useState(undefined);
 
     // handles when the view of our website goes off-screen to save on read bandwidth
     // preference of client
@@ -59,6 +62,9 @@ const Page: React.FC =() => {
 
             setLatestQuoteByInstrumentId(await getLatestQuoteByInstrumentId("128083204"));
             setLatestQuoteByExchangeAndTradingSymbol(await getLatestQuoteByExchangeAndTradingSymbol(Exchange.NSE, "RELIANCE"))
+            setOptionList(await getOptions("NIFTY"))
+            setFutureList(await getFutures("NIFTY BANK"))
+
 
             // get Relevant Instruments
             const searchInstrumentsRequest: SearchInstrumentsRequest = {
@@ -147,6 +153,10 @@ const Page: React.FC =() => {
                 <p>Latest reliance quote by instrument Id check {JSON.stringify(latestQuoteByInstrumentId)} </p>
 
                 <p>Latest reliance quote by Exchange And TradingSymbol  check {JSON.stringify(latestQuoteByExchangeAndTradingSymbol)} </p>
+
+                <p>future list for bank nifty check {JSON.stringify(futureList)}</p>      
+
+                <p>option list for nifty check {JSON.stringify(optionList).slice(0,200)} ...</p>
             </div>
         </div>
     )
