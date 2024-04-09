@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@stockseyes/market-pulse": "^2.14.0",
+    "@stockseyes/market-pulse": "file:../../market-pulse",
     "@types/node": "20.4.8",
     "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
