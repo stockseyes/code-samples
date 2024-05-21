@@ -21,6 +21,7 @@ const Page: React.FC = () => {
     const [optionList, setOptionList] = useState<optionListResponse>();
     const [futureList, setFutureList] = useState<futureListResponse>();
     const [projectedData, setProjectedData] = useState<SearchInstrumentsResponse>();
+    let time = 0
 
     // handles when the view of our website goes off-screen to save on read bandwidth
     // preference of client
@@ -84,7 +85,6 @@ const Page: React.FC = () => {
                 // offset: 0,
                 // limit: 5
             }
-            const searchInstrumentsResponse = await searchInstruments(searchInstrumentsRequest, searchInstrumentsPatternRequest, paginationDetails);
             const searchInstrumentsResponse2 = await searchInstrumentsV2({
                 filterInstrumentRequest: {exchange: [Exchange.NFO]},
                 searchInstrumentsPatternRequest: searchInstrumentsPatternRequest,
@@ -92,6 +92,9 @@ const Page: React.FC = () => {
                 fieldsRequired: [InstrumentFields.EXPIRY],
                 distinct: true
             })
+
+            const searchInstrumentsResponse = await searchInstruments(searchInstrumentsRequest, searchInstrumentsPatternRequest, paginationDetails);
+            
             console.log(searchInstrumentsResponse)
             console.log("SearchInstrumentResponse V2: " + JSON.stringify(searchInstrumentsResponse2))
             const instruments: Instrument[] = searchInstrumentsResponse.instruments
@@ -118,8 +121,10 @@ const Page: React.FC = () => {
                 TRADING_SYMBOL = "trading_symbol"
             * */
             const instrumentTokens = instruments.map((instrument => instrument.instrument_token))
+            time = Date.now()
             const unsubscribe = await subscribeRealTimeData(instrumentTokens, [Fields.TRADING_SYMBOL, Fields.LAST_PRICE, Fields.VOLUME, Fields.DEPTH, Fields.PREVIOUS_DEPTH, Fields.PREVIOUS_PRICE], (data: any) => {
                 console.log(data);
+                console.log("time passed: " + (Date.now() - time) + "millis")
                 setTradableData(data);
             })
 
