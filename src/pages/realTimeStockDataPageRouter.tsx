@@ -1,20 +1,27 @@
 import "../app/css/center.css"
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     Exchange,
-    Fields,
+    Fields, getFutures, getLatestQuoteByExchangeAndTradingSymbol, getLatestQuoteByInstrumentId,
+    getOptions,
     initialiseStocksEyes, MarketData, PaginationDetails,
     searchInstruments, SearchInstrumentsPatternRequest,
     SearchInstrumentsRequest, StocksEyesEnvironment,
-    subscribeRealTimeData
+    subscribeRealTimeData, optionListResponse, futureListResponse, SearchInstrumentsResponse, searchInstrumentsV2, InstrumentFields, Instrument
 } from "@stockseyes/market-pulse";
 
-const Page: React.FC =() => {
+const Page: React.FC = () => {
 
     const [tradableData, setTradableData] = useState<MarketData[]>([]);
-    const [unsubscribe, setUnsubscribe] = useState(() => () => {});
+    const [tradableData2, setTradableData2] = useState<MarketData[]>([]);
+    const [unsubscribe, setUnsubscribe] = useState(() => () => { });
     const [isForeground, setIsForeground] = useState(true);
-
+    const [latestQuoteByInstrumentId, setLatestQuoteByInstrumentId] = useState(undefined);
+    const [latestQuoteByExchangeAndTradingSymbol, setLatestQuoteByExchangeAndTradingSymbol] = useState(undefined);
+    const [optionList, setOptionList] = useState<optionListResponse>();
+    const [futureList, setFutureList] = useState<futureListResponse>();
+    const [projectedData, setProjectedData] = useState<SearchInstrumentsResponse>();
+    let time = 0
 
     // handles when the view of our website goes off-screen to save on read bandwidth
     // preference of client
@@ -51,14 +58,24 @@ const Page: React.FC =() => {
 
         const subscribeInstrumentDataFromStocksEyes = async () => {
             // initialize stocks eyes store
-            
-            // initialize stocks eyes store
-            await initialiseStocksEyes("---GET YOUR API KEY---> https://stockseyes.com/contact",StocksEyesEnvironment.DEV);
+            if(!process.env.NEXT_PUBLIC_APIKEY) {
+                throw Error("---GET YOUR API KEY---> https://stockseyes.com/contact")
+            }
+            await initialiseStocksEyes(
+                process.env.NEXT_PUBLIC_APIKEY ? process.env.NEXT_PUBLIC_APIKEY :
+                    "---GET YOUR API KEY---> https://stockseyes.com/contact",
+                StocksEyesEnvironment.PRODUCTION);
+
+            setLatestQuoteByInstrumentId(await getLatestQuoteByInstrumentId("128083204"));
+            setLatestQuoteByExchangeAndTradingSymbol(await getLatestQuoteByExchangeAndTradingSymbol(Exchange.NSE, "RELIANCE"))
+            setOptionList(await getOptions("NIFTY"))
+            setFutureList(await getFutures("NIFTY BANK"))
+
 
             // get Relevant Instruments
             const searchInstrumentsRequest: SearchInstrumentsRequest = {
-                tradingsymbol: ["RELIANCE23DECFUT", "NIFTY23DECFUT", "BANKNIFTY23DECFUT"],
-                // exchange: [Exchange.NSE]
+                tradingsymbol: ["RELIANCE", "NIFTY BANK"],
+                exchange: [Exchange.NSE]
             }
             const searchInstrumentsPatternRequest: SearchInstrumentsPatternRequest = {
                 // tradingsymbol: "GOLD23DECFUT",
@@ -68,12 +85,22 @@ const Page: React.FC =() => {
                 // }
             }
             const paginationDetails: PaginationDetails = {
-                offset: 0,
-                limit : 5
+                // offset: 0,
+                // limit: 5
             }
+            const searchInstrumentsResponse2 = await searchInstrumentsV2({
+                filterInstrumentRequest: {exchange: [Exchange.NFO]},
+                searchInstrumentsPatternRequest: searchInstrumentsPatternRequest,
+                paginationDetails: paginationDetails,
+                fieldsRequired: [InstrumentFields.EXPIRY],
+                distinct: true
+            })
+
             const searchInstrumentsResponse = await searchInstruments(searchInstrumentsRequest, searchInstrumentsPatternRequest, paginationDetails);
+
             console.log(searchInstrumentsResponse)
-            const instruments = searchInstrumentsResponse.instruments
+            console.log("SearchInstrumentResponse V2: " + JSON.stringify(searchInstrumentsResponse2))
+            const instruments: Instrument[] = searchInstrumentsResponse.instruments
             // either use the fields enum , if in typescript, or use simple strings
             /*
             * Possible fields are
@@ -96,18 +123,26 @@ const Page: React.FC =() => {
                 DEPTH = "depth",
                 TRADING_SYMBOL = "trading_symbol"
             * */
-            const instrumentTokens = instruments.map((instrument=> instrument.instrument_token))
-            const unsubscribe = await subscribeRealTimeData(instrumentTokens, [Fields.TRADING_SYMBOL,Fields.LAST_PRICE,Fields.VOLUME,Fields.DEPTH], (data)=>{
+            const instrumentTokens = instruments.map((instrument => instrument.instrument_token))
+            time = Date.now()
+            const unsubscribe = await subscribeRealTimeData(instrumentTokens, [Fields.TRADING_SYMBOL, Fields.LAST_PRICE, Fields.VOLUME, Fields.DEPTH, Fields.PREVIOUS_DEPTH, Fields.PREVIOUS_PRICE], (data: any) => {
                 console.log(data);
+                console.log("time passed: " + (Date.now() - time) + "millis")
                 setTradableData(data);
             })
 
             // unsubscribe when user closed your tab
             // optional, just to close connection gracefully
             window.addEventListener('beforeunload', unsubscribe);
+            // setUnsubscribe(() => {
+            //     unsubscribe()
+            //     unsubscribe2()
+            // })
+
             setUnsubscribe(() => unsubscribe)
         }
 
+        subscribeInstrumentDataFromStocksEyes();
         subscribeInstrumentDataFromStocksEyes();
 
         // unsubscribe the real time data fetch when component unmounts
@@ -117,28 +152,44 @@ const Page: React.FC =() => {
         }
     }, [isForeground]) // run whenever user comes foreground
 
+
     return (
         <div className="centered-div">
             <div>
                 <h2>Live Tradable Data</h2>
                 <table style={styles.table}>
                     <thead>
-                    <tr>
-                        <th style={styles.th}>Trading Symbol</th>
-                        <th style={styles.th}>Last Price</th>
-                        <th style={styles.th}>Volume</th>
-                    </tr>
+                        <tr>
+                            <th style={styles.th}>Trading Symbol</th>
+                            <th style={styles.th}>Last Price</th>
+                            <th style={styles.th}>Volume</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    {tradableData.map((item, index) => (
-                        <tr key={index}>
-                            <td style={styles.td}>{item[Fields.TRADING_SYMBOL]}</td>
-                            <td style={styles.td}>{item[Fields.LAST_PRICE]}</td>
-                            <td style={styles.td}>{item[Fields.VOLUME]}</td>
-                        </tr>
-                    ))}
+                        {tradableData.map((item, index) => (
+                            <tr key={index}>
+                                <td style={styles.td}>{item[Fields.TRADING_SYMBOL]}</td>
+                                <td style={styles.td}>{item[Fields.LAST_PRICE]}</td>
+                                <td style={styles.td}>{item[Fields.VOLUME]}</td>
+                            </tr>
+                        ))}
+
+                        {tradableData2.map((item, index) => (
+                            <tr key={index}>
+                                <td style={styles.td}>{item[Fields.TRADING_SYMBOL]}</td>
+                                <td style={styles.td}>{item[Fields.LAST_PRICE]}</td>
+                                <td style={styles.td}>{item[Fields.VOLUME]}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
+                <p>Latest reliance quote by instrument Id check {JSON.stringify(latestQuoteByInstrumentId)} </p>
+
+                <p>Latest reliance quote by Exchange And TradingSymbol  check {JSON.stringify(latestQuoteByExchangeAndTradingSymbol)} </p>
+
+                <p>future list for bank nifty check {JSON.stringify(futureList)}</p>
+
+                <p>option list for nifty check {JSON.stringify(optionList)?.slice(0, 200)} ...</p>
             </div>
         </div>
     )

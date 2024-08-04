@@ -53,7 +53,8 @@ const Page: React.FC =() => {
 
         const subscribeInstrumentDataFromStocksEyes = async () => {
             // initialize stocks eyes store
-            await initialiseStocksEyes("---GET YOUR API KEY---> https://stockseyes.com/contact",StocksEyesEnvironment.DEV);
+            await initialiseStocksEyes(process.env.ENV_VARIABLE ? process.env.ENV_VARIABLE :
+                "---GET YOUR API KEY---> https://stockseyes.com/contact",StocksEyesEnvironment.DEV);
 
             // get Relevant Instruments
             const searchInstrumentsRequest: SearchInstrumentsRequest = {
@@ -69,6 +70,7 @@ const Page: React.FC =() => {
             }
             const searchInstrumentsResponse = await searchInstruments(searchInstrumentsRequest, searchInstrumentsPatternRequest, paginationDetails);
             const instruments = searchInstrumentsResponse.instruments
+            console.log(instruments)
             // either use the fields enum , if in typescript, or use simple strings
             /*
             * Possible fields are
