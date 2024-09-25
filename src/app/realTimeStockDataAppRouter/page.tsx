@@ -53,8 +53,14 @@ const Page: React.FC =() => {
 
         const subscribeInstrumentDataFromStocksEyes = async () => {
             // initialize stocks eyes store
-            await initialiseStocksEyes(process.env.ENV_VARIABLE ? process.env.ENV_VARIABLE :
-                "---GET YOUR API KEY---> https://stockseyes.com/contact",StocksEyesEnvironment.DEV);
+            // initialize stocks eyes store
+            if(!process.env.NEXT_PUBLIC_APIKEY) {
+                throw Error("---GET YOUR API KEY---> https://stockseyes.com/contact")
+            }
+            await initialiseStocksEyes(
+                process.env.NEXT_PUBLIC_APIKEY ? process.env.NEXT_PUBLIC_APIKEY :
+                    "---GET YOUR API KEY---> https://stockseyes.com/contact",
+                StocksEyesEnvironment.PRODUCTION);
 
             // get Relevant Instruments
             const searchInstrumentsRequest: SearchInstrumentsRequest = {
